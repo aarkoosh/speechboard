@@ -5,20 +5,172 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Soundboard MVP</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --text: #2d3436;
+      --primary: #0984e3;
+      --primary-hover: #74b9ff;
+      --surface: #ffffff;
+      --border: #dfe6e9;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body.theme-dark {
+      --bg: #1a1c1e;
+      --text: #e9ecef;
+      --surface: #2d3436;
+      --border: #444;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+      margin: 0;
+      padding: 1.5rem;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      line-height: 1.5;
+    }
+
+    nav {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      background: var(--surface);
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      border-radius: calc(var(--radius) - 4px);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-button.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .tab-button:hover:not(.active) {
+      background-color: var(--border);
+    }
+
+    .soundboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .soundboard button {
+      padding: 1.5rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-weight: 500;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 80px;
+    }
+
+    .soundboard button:hover {
+      transform: translateY(-2px);
+      background-color: var(--primary-hover);
+      color: white;
+      border-color: var(--primary-hover);
+    }
+
+    .soundboard button:active {
+      transform: translateY(0);
+    }
+
+    .settings-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--surface);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .setting-group {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-group:last-child {
+      border-bottom: none;
+    }
+
+    select,
+    input[type="range"],
+    textarea {
+      font-family: inherit;
+      cursor: pointer;
+      width: 100%;
+      margin: 0.5rem 0 1rem;
+      box-sizing: border-box;
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    label,
+    p {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    #speakCustomBtn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: var(--radius);
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    #speakCustomBtn:hover {
+      opacity: 0.9;
+    }
+  </style>
 </head>
 
 <body>
 
-  <nav>
-    <button class="tab-button" data-tab="words">Words</button>
+  <nav role="tablist">
+    <button class="tab-button active" data-tab="words">Words</button>
     <button class="tab-button" data-tab="sentences">Sentences</button>
     <button class="tab-button" data-tab="settings">Settings</button>
   </nav>
 
   <main>
     <section id="words" class="tab-content">
-      <div class="soundboard">
+      <div class="soundboard" role="tabpanel">
         <button>Hello</button>
         <button>Yes</button>
         <button>No</button>
@@ -38,52 +190,150 @@
     </section>
 
     <section id="settings" class="tab-content" hidden>
-      <p>Theme:</p>
-      <label>
-        <input type="checkbox" id="systemThemeToggle" checked />
-        Use System Theme
-      </label>
+      <div class="settings-container">
+        <div class="setting-group">
+          <p>Appearance</p>
+          <label>
+            <input type="checkbox" id="systemThemeToggle" checked />
+            Use System Theme
+          </label>
+          <label for="themeSelect">Manual Theme Override:</label>
+          <select id="themeSelect" disabled>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
 
-      <br><br>
+        <div class="setting-group">
+          <label for="languageSelect">Preferred Language:</label>
+          <select id="languageSelect">
+            <option value="">System Default</option>
+          </select>
+          <label for="voiceSelect">Voice Selection:</label>
+          <select id="voiceSelect"></select>
+        </div>
 
-      <label for="themeSelect">Additional Themes:</label>
-      <select id="themeSelect" disabled>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
+        <div class="setting-group">
+          <label>Volume: <span id="volumeValue">1.0</span></label>
+          <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
 
-      <br><br>
+          <label>Pitch: <span id="pitchValue">1.0</span></label>
+          <input type="range" id="pitchSlider" min="0" max="2" step="0.1" value="1">
 
-      <label for="languageSelect">Language:</label>
-      <select id="languageSelect">
-        <option value="">System Default</option>
-      </select>
+          <label>Rate: <span id="rateValue">1.0</span></label>
+          <input type="range" id="rateSlider" min="0.5" max="2" step="0.1" value="1">
+        </div>
 
-      <br><br>
-
-      <label for="voiceSelect">Voice:</label>
-      <select id="voiceSelect"></select>
-
-      <br><br>
-
-      <label>Volume: <span id="volumeValue">1.0</span></label>
-      <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
-
-      <label>Pitch: <span id="pitchValue">1.0</span></label>
-      <input type="range" id="pitchSlider" min="0" max="2" step="0.1" value="1">
-
-      <label>Rate: <span id="rateValue">1.0</span></label>
-      <input type="range" id="rateSlider" min="0.5" max="2" step="0.1" value="1">
-
-      <br><br>
-
-      <label for="customText">Speak Custom Text:</label>
-      <textarea id="customText" rows="2"></textarea>
-      <button id="speakCustomBtn">Speak</button>
+        <div class="setting-group">
+          <label for="customText">Speak Custom Text:</label>
+          <textarea id="customText" rows="2" placeholder="Type something here..."></textarea>
+          <button id="speakCustomBtn" style="width: 100%;">Speak Now</button>
+        </div>
+      </div>
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script>
+    const voiceSelect = document.getElementById("voiceSelect");
+    const languageSelect = document.getElementById("languageSelect");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const pitchSlider = document.getElementById("pitchSlider");
+    const rateSlider = document.getElementById("rateSlider");
+    const customText = document.getElementById("customText");
+    const speakCustomBtn = document.getElementById("speakCustomBtn");
+    const systemThemeToggle = document.getElementById("systemThemeToggle");
+    const themeSelect = document.getElementById("themeSelect");
+
+    const volumeValue = document.getElementById("volumeValue");
+    const pitchValue = document.getElementById("pitchValue");
+    const rateValue = document.getElementById("rateValue");
+
+    let voices = [];
+
+    function populateVoices() {
+      voices = speechSynthesis.getVoices();
+
+      const langs = [...new Set(voices.map((v) => v.lang))].sort();
+      languageSelect.innerHTML = '<option value="">System Default</option>';
+      langs.forEach((lang) => {
+        const opt = document.createElement("option");
+        opt.value = lang;
+        opt.textContent = lang;
+        languageSelect.appendChild(opt);
+      });
+
+      voiceSelect.innerHTML = "";
+      voices.forEach((v, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `${v.name} (${v.lang})${v.default ? " — DEFAULT" : ""}`;
+        voiceSelect.appendChild(opt);
+      });
+    }
+
+    function speak(text) {
+      if (!text) return;
+      if (voices.length === 0) return console.warn("Voices not yet loaded");
+
+      const u = new SpeechSynthesisUtterance(text);
+      u.voice = voices[voiceSelect.value];
+      if (languageSelect.value) u.lang = languageSelect.value;
+      u.volume = parseFloat(volumeSlider.value);
+      u.pitch = parseFloat(pitchSlider.value);
+      u.rate = parseFloat(rateSlider.value);
+      speechSynthesis.speak(u);
+    }
+
+    document
+      .querySelectorAll(".soundboard button")
+      .forEach((btn) =>
+        btn.addEventListener("click", () => speak(btn.textContent))
+      );
+
+    speakCustomBtn.addEventListener("click", () => speak(customText.value.trim()));
+
+    volumeSlider.oninput = () => (volumeValue.textContent = volumeSlider.value);
+    pitchSlider.oninput = () => (pitchValue.textContent = pitchSlider.value);
+    rateSlider.oninput = () => (rateValue.textContent = rateSlider.value);
+
+    document.querySelectorAll(".tab-button").forEach((tab) =>
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.tab;
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((sec) => (sec.hidden = sec.id !== target));
+        
+        document.querySelectorAll(".tab-button").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.tab === target);
+        });
+      })
+    );
+
+    function applyTheme() {
+      document.body.classList.remove("theme-dark", "theme-light");
+      themeSelect.disabled = systemThemeToggle.checked;
+
+      if (systemThemeToggle.checked) {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches;
+        document.body.classList.add(prefersDark ? "theme-dark" : "theme-light");
+      } else {
+        document.body.classList.add(`theme-${themeSelect.value}`);
+      }
+    }
+
+    systemThemeToggle.addEventListener("change", applyTheme);
+    themeSelect.addEventListener("change", applyTheme);
+
+    // Listen for system theme changes in real-time
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      if (systemThemeToggle.checked) applyTheme();
+    });
+
+    if (speechSynthesis.getVoices().length) populateVoices();
+    speechSynthesis.onvoiceschanged = populateVoices;
+    applyTheme();
+  </script>
 </body>
 
 </html>
