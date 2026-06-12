@@ -1,1 +1,65 @@
+body {
+  margin: 0;
+  padding: 1rem;
+}
+
+nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.soundboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+button {
+  padding: 1rem;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+select,
+input[type="range"],
+textarea {
+  cursor: pointer;
+  width: 100%;
+  margin: 0.5rem 0 1rem;
+  box-sizing: border-box;
+}
+
+label,
+p {
+  display: block;
+  margin: 1rem 0 0.25rem;
+}
+
+body.theme-dark {
+  background: #1a1a1a;
+  color: white;
+}
+
+body.theme-dark button,
+body.theme-dark select,
+body.theme-dark textarea,
+body.theme-dark input[type="range"] {
+  background: #2a2a2a;
+  color: white;
+  border-color: #444;
+}
+
+body.theme-light {
+  background: white;
+  color: black;
+}
 
